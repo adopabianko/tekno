@@ -113,9 +113,8 @@
                     var obj = jQuery.parseJSON(JSON.stringify(data));
 
                     if (obj.status == 'success') {
-                        alertify.alert(obj.message, function(e) {
-                            window.location.reload();
-                        });
+                        var data_tables = $('#datatables').DataTable();
+                        data_tables.draw();
                     } else {
                         alertify.alert(obj.message);
                     }

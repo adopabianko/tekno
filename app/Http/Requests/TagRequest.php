@@ -27,12 +27,16 @@ class TagRequest extends FormRequest
         switch($this->method()) {
             case 'POST':
                 return [
-                    'name' => 'required|unique:tags',
+                    'name' => ['required', Rule::unique('tags')
+                        ->where('status', 1)
+                    ],
                 ];
             case 'PUT':
             case 'PATCH':
                 return [
-                    'name' => ['required', Rule::unique('tags')->ignore($this->POST('name'),'name')],
+                    'name' => ['required', Rule::unique('tags')
+                    ->where('status', 1)
+                    ->ignore($this->POST('name'),'name')],
                 ];
             default:break;
         };
