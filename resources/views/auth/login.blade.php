@@ -21,7 +21,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="{{ route('login') }}"><b>Osk</b>ab</a>
+        <a href="{{ route('login') }}"><b>Tek</b>no</a>
     </div>
     <!-- /.login-logo -->
     <div class="card">
