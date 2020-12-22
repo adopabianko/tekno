@@ -33,6 +33,18 @@ class UserSeeder extends Seeder
         \DB::table('users')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('posts')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('post_categories')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('tags')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         // Role Data
         \DB::table('roles')->insert([
             'name' => 'administrator',
