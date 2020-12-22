@@ -19,6 +19,7 @@ class CreatePostCategoriesTable extends Migration
             $table->string('slug');
             $table->string('description');
             $table->integer('parent')->nullable();
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }
