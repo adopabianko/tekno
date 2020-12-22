@@ -76,4 +76,17 @@ Route::group(['middleware' => 'auth'], function(){
         Route::put('/post-category/{category}/update', [App\Http\Controllers\PostCategoryController::class, 'update'])->name('post-category.update');
         Route::get('/post-category/{category}/destroy', [App\Http\Controllers\PostCategoryController::class, 'destroy'])->name('post-category.destroy');
     });
+
+    /**
+     * Tag
+     */
+    Route::group(['middleware' => ["permission:tag*"]], function() {
+        Route::get('/tag', [App\Http\Controllers\TagController::class, 'index'])->name('tag');
+        Route::get('/tag/datatables', [App\Http\Controllers\TagController::class, 'datatables'])->name('tag.datatables');
+        Route::get('/tag/create', [App\Http\Controllers\TagController::class, 'create'])->name('tag.create');
+        Route::post('/tag/store', [App\Http\Controllers\TagController::class, 'store'])->name('tag.store');
+        Route::get('/tag/{tag}/edit', [App\Http\Controllers\TagController::class, 'edit'])->name('tag.edit');
+        Route::put('/tag/{tag}/update', [App\Http\Controllers\TagController::class, 'update'])->name('tag.update');
+        Route::get('/tag/{tag}/destroy', [App\Http\Controllers\TagController::class, 'destroy'])->name('tag.destroy');
+    });
 });

@@ -85,10 +85,10 @@
                             @endpermission
                             @permission('posts-view')
                             <li class="nav-item has-treeview
-                            {{ request()->is('post*') ? 'menu-open' : ''}}
+                            {{ request()->is('post*') || request()->is('tag*') ? 'menu-open' : ''}}
                             ">
                                 <a href="#" class="nav-link
-                                {{ request()->is('post*') ? 'active' : ''}}
+                                {{ request()->is('post*') || request()->is('tag*') ? 'active' : ''}}
                                 ">
                                     <i class="nav-icon fas fa-users"></i>
                                     <p>
@@ -102,6 +102,14 @@
                                         <a href="{{ route('post-category') }}" class="nav-link {{ request()->is('post-category*') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Categories</p>
+                                        </a>
+                                    </li>
+                                    @endpermission
+                                    @permission('tag*')
+                                    <li class="nav-item">
+                                        <a href="{{ route('tag') }}" class="nav-link {{ request()->is('tag*') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Tags</p>
                                         </a>
                                     </li>
                                     @endpermission
