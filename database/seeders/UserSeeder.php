@@ -58,6 +58,7 @@ class UserSeeder extends Seeder
                 'description' => 'Hak akses untuk menu user management'
             ],
         ]);
+
         // Role
         \DB::table('permissions')->insert([
             [
@@ -121,6 +122,63 @@ class UserSeeder extends Seeder
             [
                 'name' => 'user-destroy-data',
                 'display_name' => 'User Destroy Data',
+                'description' => 'Hak akses untuk mengubah data'
+            ],
+        ]);
+
+        // Posts
+        \DB::table('permissions')->insert([
+            [
+                'name' => 'posts-view',
+                'display_name' => 'Posts View',
+                'description' => 'Hak akses untuk menu posts'
+            ],
+        ]);
+
+        // Post Category
+        \DB::table('permissions')->insert([
+            [
+                'name' => 'post-category-view-list-data',
+                'display_name' => 'Post Category View List Data',
+                'description' => 'Hak akses untuk melihat list data'
+            ],
+            [
+                'name' => 'post-category-add-new-data',
+                'display_name' => 'Post Category Add New Data',
+                'description' => 'Hak akses untuk menambah data'
+            ],
+            [
+                'name' => 'post-category-edit-data',
+                'display_name' => 'Post Category Edit Data',
+                'description' => 'Hak akses untuk mengubah data'
+            ],
+            [
+                'name' => 'post-category-destroy-data',
+                'display_name' => 'Post Category Destroy Data',
+                'description' => 'Hak akses untuk mengubah data'
+            ],
+        ]);
+
+        // Tag
+        \DB::table('permissions')->insert([
+            [
+                'name' => 'tag-view-list-data',
+                'display_name' => 'Tag View List Data',
+                'description' => 'Hak akses untuk melihat list data'
+            ],
+            [
+                'name' => 'tag-add-new-data',
+                'display_name' => 'Tag Add New Data',
+                'description' => 'Hak akses untuk menambah data'
+            ],
+            [
+                'name' => 'tag-edit-data',
+                'display_name' => 'Tag Edit Data',
+                'description' => 'Hak akses untuk mengubah data'
+            ],
+            [
+                'name' => 'tag-destroy-data',
+                'display_name' => 'Tag Destroy Data',
                 'description' => 'Hak akses untuk mengubah data'
             ],
         ]);
@@ -212,6 +270,56 @@ class UserSeeder extends Seeder
                 ],
                 [
                     'permission_id' => 13,
+                    'role_id' => 1,
+                ],
+            ]
+        );
+
+        // Posts
+        \DB::table('permission_role')->insert([
+            'permission_id' => 14,
+            'role_id' => 1,
+        ]);
+
+        // Post Category
+        \DB::table('permission_role')->insert(
+            [
+                [
+                    'permission_id' => 15,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 16,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 17,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 18,
+                    'role_id' => 1,
+                ],
+            ]
+        );
+
+        // Tag
+        \DB::table('permission_role')->insert(
+            [
+                [
+                    'permission_id' => 19,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 20,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 21,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 22,
                     'role_id' => 1,
                 ],
             ]
