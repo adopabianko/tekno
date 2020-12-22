@@ -90,7 +90,7 @@
                                 <a href="#" class="nav-link
                                 {{ request()->is('post*') || request()->is('tag*') ? 'active' : ''}}
                                 ">
-                                    <i class="nav-icon fas fa-users"></i>
+                                    <i class="nav-icon fas fa-newspaper"></i>
                                     <p>
                                         Posts
                                         <i class="right fas fa-angle-left"></i>
