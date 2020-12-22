@@ -63,4 +63,17 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/user/profile', [App\Http\Controllers\UserController::class, 'profile'])->name('user.profile');
         Route::put('/user/{user}/profile-update', [App\Http\Controllers\UserController::class, 'profileUpdate'])->name('user.profile-update');
     });
+
+    /**
+     * Post Category
+     */
+    Route::group(['middleware' => ["permission:post-category*"]], function() {
+        Route::get('/post-category', [App\Http\Controllers\PostCategoryController::class, 'index'])->name('post-category');
+        Route::get('/post-category/datatables', [App\Http\Controllers\PostCategoryController::class, 'datatables'])->name('post-category.datatables');
+        Route::get('/post-category/create', [App\Http\Controllers\PostCategoryController::class, 'create'])->name('post-category.create');
+        Route::post('/post-category/store', [App\Http\Controllers\PostCategoryController::class, 'store'])->name('post-category.store');
+        Route::get('/post-category/{category}/edit', [App\Http\Controllers\PostCategoryController::class, 'edit'])->name('post-category.edit');
+        Route::put('/post-category/{category}/update', [App\Http\Controllers\PostCategoryController::class, 'update'])->name('post-category.update');
+        Route::get('/post-category/{category}/destroy', [App\Http\Controllers\PostCategoryController::class, 'destroy'])->name('post-category.destroy');
+    });
 });
