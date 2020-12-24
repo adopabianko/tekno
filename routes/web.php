@@ -89,4 +89,17 @@ Route::group(['middleware' => 'auth'], function(){
         Route::put('/tag/{tag}/update', [App\Http\Controllers\TagController::class, 'update'])->name('tag.update');
         Route::get('/tag/{tag}/destroy', [App\Http\Controllers\TagController::class, 'destroy'])->name('tag.destroy');
     });
+
+    /**
+     * Post
+     */
+    Route::group(['middleware' => ["permission:post*"]], function() {
+        Route::get('/post', [App\Http\Controllers\PostController::class, 'index'])->name('post');
+        Route::get('/post/datatables', [App\Http\Controllers\PostController::class, 'datatables'])->name('post.datatables');
+        Route::get('/post/create', [App\Http\Controllers\PostController::class, 'create'])->name('post.create');
+        Route::post('/post/store', [App\Http\Controllers\PostController::class, 'store'])->name('post.store');
+        Route::get('/post/{post}/edit', [App\Http\Controllers\PostController::class, 'edit'])->name('post.edit');
+        Route::put('/post/{post}/update', [App\Http\Controllers\PostController::class, 'update'])->name('post.update');
+        Route::get('/post/{post}/destroy', [App\Http\Controllers\PostController::class, 'destroy'])->name('post.destroy');
+    });
 });

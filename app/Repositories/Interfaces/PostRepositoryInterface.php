@@ -2,8 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
-interface TagRepositoryInterface {
-    public function getAll();
+interface PostRepositoryInterface {
     public function datatables();
     public function save($PostCategoryData);
     public function update($reqParam, $PostCategoryData);

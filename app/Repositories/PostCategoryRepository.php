@@ -9,7 +9,7 @@ use Yajra\Datatables\Datatables;
 class PostCategoryRepository implements PostCategoryInterface {
 
     public function getAll() {
-        return PostCategory::all();
+        return PostCategory::where('status', 1)->orderBy('id','desc')->get();
     }
 
     public function datatables() {

@@ -45,6 +45,10 @@ class UserSeeder extends Seeder
         \DB::table('tags')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('posts')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         // Role Data
         \DB::table('roles')->insert([
             'name' => 'administrator',
@@ -194,6 +198,35 @@ class UserSeeder extends Seeder
                 'description' => 'Hak akses untuk mengubah data'
             ],
         ]);
+
+        // Post
+        \DB::table('permissions')->insert([
+            [
+                'name' => 'post-view-list-data',
+                'display_name' => 'Post View List Data',
+                'description' => 'Hak akses untuk melihat list data'
+            ],
+            [
+                'name' => 'post-add-new-data',
+                'display_name' => 'Post Add New Data',
+                'description' => 'Hak akses untuk menambah data'
+            ],
+            [
+                'name' => 'post-edit-data',
+                'display_name' => 'Post Edit Data',
+                'description' => 'Hak akses untuk mengubah data'
+            ],
+            [
+                'name' => 'post-destroy-data',
+                'display_name' => 'Post Destroy Data',
+                'description' => 'Hak akses untuk mengubah data'
+            ],
+            [
+                'name' => 'publish-destroy-data',
+                'display_name' => 'Post Publish Data',
+                'description' => 'Hak akses untuk mempublish data'
+            ],
+        ]);
         // End Permission Data
 
         // User Data
@@ -332,6 +365,32 @@ class UserSeeder extends Seeder
                 ],
                 [
                     'permission_id' => 22,
+                    'role_id' => 1,
+                ],
+            ]
+        );
+
+        // Post
+        \DB::table('permission_role')->insert(
+            [
+                [
+                    'permission_id' => 23,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 24,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 25,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 26,
+                    'role_id' => 1,
+                ],
+                [
+                    'permission_id' => 27,
                     'role_id' => 1,
                 ],
             ]
