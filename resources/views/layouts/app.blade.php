@@ -85,10 +85,18 @@
                             @endpermission
                             @permission('posts-view')
                             <li class="nav-item has-treeview
-                            {{ request()->is('post*') || request()->is('tag*') ? 'menu-open' : ''}}
+                            {{ 
+                                request()->is('post*') || 
+                                request()->is('tag*') || 
+                                request()->is('post*') ? 'menu-open' : ''
+                            }}
                             ">
                                 <a href="#" class="nav-link
-                                {{ request()->is('post*') || request()->is('tag*') ? 'active' : ''}}
+                                {{ 
+                                    request()->is('post*') || 
+                                    request()->is('tag*') ||
+                                    request()->is('post*') ? 'active' : ''
+                                }}
                                 ">
                                     <i class="nav-icon fas fa-newspaper"></i>
                                     <p>
@@ -110,6 +118,14 @@
                                         <a href="{{ route('tag') }}" class="nav-link {{ request()->is('tag*') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Tags</p>
+                                        </a>
+                                    </li>
+                                    @endpermission
+                                    @permission('post-view-list-data')
+                                    <li class="nav-item">
+                                        <a href="{{ route('post') }}" class="nav-link {{ request()->is('post') || request()->is('post/create') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>List Posts</p>
                                         </a>
                                     </li>
                                     @endpermission

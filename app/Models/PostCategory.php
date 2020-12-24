@@ -19,4 +19,8 @@ class PostCategory extends Model
     public function parentCategory() {
         return $this->belongsTo('App\Models\PostCategory', 'parent');
     }
+
+    public function Post() {
+        $this->hasMany('App\Models\Post', 'category', 'id');
+    }
 }

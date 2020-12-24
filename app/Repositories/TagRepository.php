@@ -7,6 +7,10 @@ use App\Models\Tag;
 use Yajra\Datatables\Datatables;
 
 class TagRepository implements TagRepositoryInterface {
+    public function getAll() {
+        return Tag::where('status', 1)->orderBy('id','desc')->get();
+    }
+
     public function datatables() {
         return Datatables::of(Tag::where('status', 1)->orderBy('id','desc')->get())
             ->editColumn('actions', function($col) {

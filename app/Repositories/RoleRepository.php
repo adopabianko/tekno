@@ -9,7 +9,7 @@ use Yajra\Datatables\Datatables;
 class RoleRepository implements RoleRepositoryInterface {
 
     public function getAll() {
-        return Role::all();
+        return Role::orderBy('id','desc')->get();
     }
 
     public function datatables() {
