@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Post Category</h1>
+                    <h1>Categories</h1>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-right">
@@ -38,7 +38,7 @@
                     <!-- jquery validation -->
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">Edit Post Category</h3>
+                            <h3 class="card-title">Edit Category</h3>
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
