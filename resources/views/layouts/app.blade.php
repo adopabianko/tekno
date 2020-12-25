@@ -104,7 +104,26 @@
                                         <i class="right fas fa-angle-left"></i>
                                     </p>
                                 </a>
-                                <ul class="nav nav-treeview">
+				<ul class="nav nav-treeview">
+				    @permission('post-add-new-data')
+                                    <li class="nav-item">
+                                        <a href="{{ route('post.create') }}" class="nav-link {{ request()->is('post/create') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Add New</p>
+                                        </a>
+                                    </li>
+                                    @endpermission
+				    @permission('post-view-list-data')
+				
+				    @php $postId = Request::route('post.id') @endphp
+
+                                    <li class="nav-item">
+                                        <a href="{{ route('post') }}" class="nav-link {{ request()->is('post') || request()->is('post/'.$postId.'/edit') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>All Posts</p>
+                                        </a>
+                                    </li>
+                                    @endpermission
                                     @permission('post-category*')
                                     <li class="nav-item">
                                         <a href="{{ route('post-category') }}" class="nav-link {{ request()->is('post-category*') ? 'active' : '' }}">
@@ -121,25 +140,6 @@
                                         </a>
                                     </li>
 				    @endpermission
-				    @permission('post-add-new-data')
-                                    <li class="nav-item">
-                                        <a href="{{ route('post.create') }}" class="nav-link {{ request()->is('post/create') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Create Post</p>
-                                        </a>
-                                    </li>
-                                    @endpermission
-				    @permission('post-view-list-data')
-				
-				    @php $postId = Request::route('post.id') @endphp
-
-                                    <li class="nav-item">
-                                        <a href="{{ route('post') }}" class="nav-link {{ request()->is('post') || request()->is('post/'.$postId.'/edit') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>List Post</p>
-                                        </a>
-                                    </li>
-                                    @endpermission
                                 </ul>
                             </li>
                             @endpermission
