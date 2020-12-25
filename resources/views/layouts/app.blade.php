@@ -120,12 +120,23 @@
                                             <p>Tags</p>
                                         </a>
                                     </li>
-                                    @endpermission
-                                    @permission('post-view-list-data')
+				    @endpermission
+				    @permission('post-add-new-data')
                                     <li class="nav-item">
-                                        <a href="{{ route('post') }}" class="nav-link {{ request()->is('post') || request()->is('post/create') ? 'active' : '' }}">
+                                        <a href="{{ route('post.create') }}" class="nav-link {{ request()->is('post/create') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>List Posts</p>
+                                            <p>Create Post</p>
+                                        </a>
+                                    </li>
+                                    @endpermission
+				    @permission('post-view-list-data')
+				
+				    @php $postId = Request::route('post.id') @endphp
+
+                                    <li class="nav-item">
+                                        <a href="{{ route('post') }}" class="nav-link {{ request()->is('post') || request()->is('post/'.$postId.'/edit') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>List Post</p>
                                         </a>
                                     </li>
                                     @endpermission
