@@ -10,11 +10,11 @@
         <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
         <!-- Ionicons -->
         <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        @yield('css')
         <!-- overlayScrollbars -->
         <link rel="stylesheet" href="{{ asset('theme/dist/css/adminlte.min.css') }}">
         <!-- Google Font: Source Sans Pro -->
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-        @yield('css')
     </head>
     <body class="hold-transition sidebar-mini">
         <!-- Site wrapper -->
@@ -210,10 +210,10 @@
         <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
         <!-- Bootstrap 4 -->
         <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        @yield('js')
         <!-- AdminLTE App -->
         <script src="{{ asset('theme/dist/js/adminlte.min.js') }}"></script>
         <!-- AdminLTE for demo purposes -->
         <script src="{{ asset('theme/dist/js/demo.js') }}"></script>
-        @yield('js')
     </body>
 </html>
