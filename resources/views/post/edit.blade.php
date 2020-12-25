@@ -71,7 +71,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="category">Category</label> <label class="text-danger">*</label>
-                                    <select name="category" class="form-control" id="category" multiple="multiple" data-placeholder="Choose" data-dropdown-css-class="select2-purple">
+                                    <select name="category" class="form-control" id="category" data-placeholder="Choose" data-dropdown-css-class="select2-purple">
                                         @foreach($categories as $item)
                                             @php $selected = $item->id == $post->category ? 'selected' : '' @endphp
                                             <option {{ $selected }} value="{{ $item->id }}">{{ $item->name }}</option>
