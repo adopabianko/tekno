@@ -44,7 +44,7 @@ class PostCategoryRepository implements PostCategoryInterface {
     }
 
     public function save($postCategoryData) {
-        $postCategoryData['slug'] = str_replace(' ', '_', strtolower($postCategoryData['name']));
+        $postCategoryData['slug'] = str_replace(' ', '-', strtolower($postCategoryData['name']));
         $postCategory = new PostCategory($postCategoryData);
 
         return $postCategory->save();
@@ -52,7 +52,7 @@ class PostCategoryRepository implements PostCategoryInterface {
 
     public function update($reqParam, $postCategoryData) {
         $dataUpdate = $reqParam->all();
-        $dataUpdate['slug'] = str_replace(' ', '_', strtolower($dataUpdate['name']));
+        $dataUpdate['slug'] = str_replace(' ', '-', strtolower($dataUpdate['name']));
 
         return $postCategoryData->update($dataUpdate);
     }

@@ -55,7 +55,7 @@ class PostRepository implements PostRepositoryInterface {
 
         $requestAll = $post->all();
         $requestAll['cover'] = basename($storageName);
-        $requestAll['slug'] = str_replace(' ', '_', strtolower($requestAll['title']));
+        $requestAll['slug'] = str_replace(' ', '-', strtolower($requestAll['title']));
 
         $post = new Post($requestAll);
         $post->save();
@@ -77,7 +77,7 @@ class PostRepository implements PostRepositoryInterface {
             unset($dataUpdate['cover']);
         }
 
-        $dataUpdate['slug'] = str_replace(' ', '_', strtolower($dataUpdate['title']));
+        $dataUpdate['slug'] = str_replace(' ', '-', strtolower($dataUpdate['title']));
 
         return $post->update($dataUpdate);
     }
