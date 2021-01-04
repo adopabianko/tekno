@@ -27,7 +27,7 @@ class PostRequest extends FormRequest
         switch($this->method()) {
             case 'POST':
                 return [
-                    'category' => 'required',
+                    'category_id' => 'required',
                     'title' => ['required', Rule::unique('posts')
                         ->where('status', 1)
                     ],
@@ -37,7 +37,7 @@ class PostRequest extends FormRequest
             case 'PUT':
             case 'PATCH':
                 return [
-                    'category' => 'required',
+                    'category_id' => 'required',
                     'title' => ['required', Rule::unique('posts')
                         ->where('status', 1)
                         ->ignore($this->POST('title'),'title')],
