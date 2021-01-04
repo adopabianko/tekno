@@ -28,7 +28,7 @@ $ ./vendor/bin/sail artisan migrate
 ```
 
 ```bash
-./vendor/bin/sail artisan db:seed
+$ ./vendor/bin/sail artisan db:seed
 ```
 
 Akses Url http://localhost:8484
