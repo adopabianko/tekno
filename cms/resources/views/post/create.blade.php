@@ -70,8 +70,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="category">Category</label> <label class="text-danger">*</label>
-                                    <select name="category" class="form-control" id="category" data-placeholder="Choose" data-dropdown-css-class="select2-purple">
-					@foreach($categories as $item)
+                                    <select name="category_id" class="form-control" id="category" data-placeholder="Choose" data-dropdown-css-class="select2-purple">
+					                    @foreach($categories as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>

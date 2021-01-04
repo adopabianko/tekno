@@ -13,7 +13,9 @@ class PostTagRepository implements PostTagRepositoryInterface {
         foreach ($tags as $item) {
             $data[] = [
                 'post_id' => $postId,
-                'tag_id' => $item
+                'tag_id' => $item,
+                'created_at' => now(), 
+                'updated_at' => now(), 
             ];
         }
         return PostTag::insert($data);
@@ -33,7 +35,8 @@ class PostTagRepository implements PostTagRepositoryInterface {
             foreach ($tags as $item) {
                 $data[] = [
                     'post_id' => $postId,
-                    'tag_id' => $item
+                    'tag_id' => $item, 
+                    'updated_at' => now(),
                 ];
             }
 
