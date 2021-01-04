@@ -67,12 +67,13 @@ $ node console generatetoken
 ```
 
 <p align="center">
-  <a href="#"><img alt="flip" src="https://user-images.githubusercontent.com/8348927/103527645-421a5080-4eb5-11eb-8281-3a86aa84b5ec.png" width="500"/></a>
+  <a href="#"><img alt="flip" src="https://user-images.githubusercontent.com/8348927/103527645-421a5080-4eb5-11eb-8281-3a86aa84b5ec.png" width="1000"/></a>
 </p>
 
 <p align="center">
-  <a href="#"><img alt="flip" src="https://user-images.githubusercontent.com/8348927/103528368-6c204280-4eb6-11eb-9a80-cfe5880a94c1.png" width="500"/></a>
+  <a href="#"><img alt="flip" src="https://user-images.githubusercontent.com/8348927/103528368-6c204280-4eb6-11eb-9a80-cfe5880a94c1.png" width="1000"/></a>
 </p>
+
 
 #### Endpoint API :
 
