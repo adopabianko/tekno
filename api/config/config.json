@@ -3,9 +3,9 @@
     "username": "root",
     "password": "secret",
     "database": "tekno",
-    "host": "127.0.0.1",
+    "host": "mysql",
     "dialect": "mysql",
-    "port": 3309
+    "port": 3306
   },
   "test": {
     "username": "root",

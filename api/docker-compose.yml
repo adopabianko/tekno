@@ -1,0 +1,14 @@
+version: '3'
+services:
+  tekno_api:
+    build: .
+    ports:
+      - '3434:3000'
+    volumes:
+      - './:/code'
+    networks:
+      - cms_sail
+networks:
+  cms_sail:
+    external:
+      name: cms_sail
