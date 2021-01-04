@@ -35,7 +35,7 @@ Akses Url http://localhost:8484
 
 
 
-### Proses Instalasi CMS
+### Proses Instalasi API
 
 Jalankan perintah berikut di command line:
 
@@ -63,7 +63,7 @@ Akses Url http://localhost:3434
 Untuk mengakses api dibutuhkan sebuah token sebagai paramater di header request yang di generate otomatis oleh sistem, jalankan perintah berikut untuk mendapatkan token :
 
 ```bash
-node console generatetoken
+$ node console generatetoken
 ```
 
 <p align="center">
