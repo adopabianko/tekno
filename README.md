@@ -31,6 +31,12 @@ $ ./vendor/bin/sail artisan migrate
 $ ./vendor/bin/sail artisan db:seed
 ```
 
+```bash
+$ ./vendor/bin/sail artisan storage:link
+```
+
+
+
 Akses Url http://localhost:8484
 
 
