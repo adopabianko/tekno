@@ -8,8 +8,8 @@ const tagController = require('../controllers/tag');
 router.get('/', function(req, res) {
     res.json('Tekno Api');
 });
-router.get('/post', postController.find);
-router.get('/post/category', postCategoryController.find);
-router.get('/post/tag', tagController.find);
+router.get('/post', validateToken, postController.find);
+router.get('/post/category', validateToken, postCategoryController.find);
+router.get('/post/tag', validateToken, tagController.find);
 
 module.exports = router;

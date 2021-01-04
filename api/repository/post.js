@@ -14,7 +14,7 @@ const findAll = () => {
         },
         include: [
             {
-                model: models.Category,
+                model: models.PostCategory,
                 attributes: ['name'],
                 as: 'category',
             },
@@ -48,7 +48,7 @@ const findByCategory = (category) => {
         },
         include: [
             {
-                model: models.Category,
+                model: models.PostCategory,
                 attributes: ['name'],
                 as: 'category',
                 where: {
