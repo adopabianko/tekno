@@ -1,12 +1,12 @@
 'use strict'
 const {Model} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-    class Category extends Model {
+    class PostCategory extends Model {
         static associate(models) {
             // define association here
         }
     };
-    Category.init({
+    PostCategory.init({
         name: DataTypes.STRING,
         slug: DataTypes.STRING,
         description: DataTypes.STRING,
@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
         updatedAt: { type:DataTypes.DATE, field:'updated_at' },
     }, {
         sequelize,
-        modelName: 'Category',
+        modelName: 'PostCategory',
         tableName: 'post_categories',
     });
-    return Category;
+    return PostCategory;
 }

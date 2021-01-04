@@ -12,19 +12,19 @@ const find = async (req, res) => {
             const post = await postService.findByCategory(category);
 
             if (post.length < 1){
-                logger.info("Post data not found");
+                logger.info("Get Post");
 
                 return res.status(404).json({
                     "code": 404,
-                    "message": "Post data nof found"
+                    "message": "Post not found"
                 });
             }
 
-            logger.info("Get data Post")
+            logger.info("Get Post")
 
             return res.status(200).json({
                 "code": 200,
-                "message": "List of data post",
+                "message": "List post",
                 "data": post,
             });
         }
@@ -33,19 +33,19 @@ const find = async (req, res) => {
         const posts = await postService.findAll();
 
         if (posts.length < 1){
-            logger.info("Post data not found");
+            logger.info("Get Post");
 
             return res.status(404).json({
                 "code": 404,
-                "message": "Post data nof found"
+                "message": "Post not found"
             });
         }
 
-        logger.info("Get data Post")
+        logger.info("Get Post")
 
         return res.status(200).json({
             "code": 200,
-            "message": "List of data post",
+            "message": "List post",
             "data": posts,
         });
     } catch (err) {
@@ -54,7 +54,7 @@ const find = async (req, res) => {
         return res.status(500).json({
             "code": 500,
             "message": err,
-        })
+        });
     }
 };
 

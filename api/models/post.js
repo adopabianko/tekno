@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     class Post extends Model {
         static associate(models) {
             // define association here
-            Post.belongsTo(models.Category, {
+            Post.belongsTo(models.PostCategory, {
                 as: 'category',
                 foreignKey: 'category_id',
             });
