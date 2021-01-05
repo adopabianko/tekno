@@ -1,11 +1,24 @@
-const log4js = require('log4js');
-const logger = log4js.getLogger();
 const postCategoryService = require('../services/post_category');
-logger.level = 'debug';
+const logger = require('../commons/logger');
+const {getCache, setCache} = require('../commons/redis');
+
 
 const find = async (req, res) => {
     try {
-        // find all
+        const categoriesCache = await getCache("post-categories").catch((err) => {
+            if (err) console.error(err);
+        })
+
+        if (categoriesCache) {
+            logger.info("Get Category");
+
+            return res.status(200).json({
+                "code": 200,
+                "message": "List of category",
+                "data": JSON.parse(categoriesCache),
+            });
+        }
+
         const categories = await postCategoryService.findAll();
 
         if (categories.length < 1){
@@ -13,11 +26,13 @@ const find = async (req, res) => {
 
             return res.status(404).json({
                 "code": 404,
-                "message": "Category not found"
+                "message": "Category not found",
             });
         }
 
-        logger.info("Get Category")
+        logger.info("Get Category");
+
+        await setCache("post-categories", JSON.stringify(categories));
 
         return res.status(200).json({
             "code": 200,

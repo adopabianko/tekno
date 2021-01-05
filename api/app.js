@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var dotenv = require('dotenv').config();
 var routes = require('./routes');
-
 var app = express();
 
 // view engine setup

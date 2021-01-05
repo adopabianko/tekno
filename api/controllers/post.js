@@ -1,7 +1,6 @@
-const log4js = require('log4js');
-const logger = log4js.getLogger();
 const postService = require('../services/post');
-logger.level = 'debug';
+const logger = require('../commons/logger');
+const {getCache, setCache} = require('../commons/redis');
 
 const find = async (req, res) => {
     try {
@@ -9,9 +8,21 @@ const find = async (req, res) => {
 
         // find by category
         if (category) {
-            const post = await postService.findByCategory(category);
+            const postsCache = await getCache("posts:"+category).catch((err) => {
+                if (err) console.error(err);
+            });
 
-            if (post.length < 1){
+            if (postsCache) {
+                return res.status(200).json({
+                    "code": 200,
+                    "message": "List post",
+                    "data": JSON.parse(postsCache),
+                });
+            }
+
+            const posts = await postService.findByCategory(category);
+
+            if (posts.length < 1){
                 logger.info("Get Post");
 
                 return res.status(404).json({
@@ -20,16 +31,32 @@ const find = async (req, res) => {
                 });
             }
 
-            logger.info("Get Post")
+            logger.info("Get Post");
+
+            await setCache("posts:"+category, JSON.stringify(posts));
 
             return res.status(200).json({
                 "code": 200,
                 "message": "List post",
-                "data": post,
+                "data": posts,
             });
         }
 
         // find all
+        const postsCache = await getCache("posts").catch((err) => {
+            if (err) console.error(err);
+        });
+
+        if (postsCache) {
+            logger.info("Get Post");
+
+            return res.status(200).json({
+                "code": 200,
+                "message": "List post",
+                "data": JSON.parse(postsCache),
+            });
+        }
+
         const posts = await postService.findAll();
 
         if (posts.length < 1){
@@ -41,7 +68,9 @@ const find = async (req, res) => {
             });
         }
 
-        logger.info("Get Post")
+        logger.info("Get Post");
+
+        await setCache("posts", JSON.stringify(posts));
 
         return res.status(200).json({
             "code": 200,
