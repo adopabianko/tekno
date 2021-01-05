@@ -5,7 +5,7 @@ const {getCache, setCache} = require('../commons/redis');
 
 const find = async (req, res) => {
     try {
-        const categoriesCache = await getCache("post-categories").catch((err) => {
+        const categoriesCache = await getCache("post:categories").catch((err) => {
             if (err) console.error(err);
         })
 
@@ -32,7 +32,7 @@ const find = async (req, res) => {
 
         logger.info("Get Category");
 
-        await setCache("post-categories", JSON.stringify(categories));
+        await setCache("post:categories", JSON.stringify(categories));
 
         return res.status(200).json({
             "code": 200,
