@@ -21,6 +21,6 @@ class PostCategory extends Model
     }
 
     public function Post() {
-        $this->hasMany('App\Models\Post', 'category', 'id');
+        $this->hasMany('App\Models\Post', 'category_id', 'id');
     }
 }
