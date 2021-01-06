@@ -10,13 +10,7 @@ use Yajra\Datatables\Datatables;
 class UserRepository implements UserRepositoryInterface {
 
     public function datatables() {
-        $users = \DB::table('users as aa')
-        ->select('aa.*', 'cc.display_name',)
-        ->join('role_user as bb', 'aa.id', '=', 'bb.user_id')
-        ->join('roles as cc', 'bb.role_id', '=', 'cc.id')
-        ->where('aa.active', 1)
-        ->orderBy('aa.id','desc')
-        ->get();
+        $users =  User::with('role_user.role')->get();
 
         return Datatables::of($users)
         ->editColumn('actions', function($col) {

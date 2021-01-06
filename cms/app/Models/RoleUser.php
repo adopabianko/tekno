@@ -10,4 +10,8 @@ class RoleUser extends Model
     use HasFactory;
 
     protected $table = 'role_user';
+
+    public function role_user() {
+        return $this->hasOne('App\Models\RoleUser', 'user_id', 'id');
+    }
 }
