@@ -8,7 +8,7 @@ const find = async (req, res) => {
 
         // find by category
         if (category) {
-            const postsCache = await getCache("posts:"+category).catch((err) => {
+            const postsCache = await getCache("tekno_cache:posts:"+category).catch((err) => {
                 if (err) console.error(err);
             });
 
@@ -33,7 +33,7 @@ const find = async (req, res) => {
 
             logger.info("Get Post");
 
-            await setCache("posts:"+category, JSON.stringify(posts));
+            await setCache("tekno_cache:posts:"+category, JSON.stringify(posts));
 
             return res.status(200).json({
                 "code": 200,
@@ -43,7 +43,7 @@ const find = async (req, res) => {
         }
 
         // find all
-        const postsCache = await getCache("posts").catch((err) => {
+        const postsCache = await getCache("tekno_cache:posts").catch((err) => {
             if (err) console.error(err);
         });
 
@@ -70,7 +70,7 @@ const find = async (req, res) => {
 
         logger.info("Get Post");
 
-        await setCache("posts", JSON.stringify(posts));
+        await setCache("tekno_cache:posts", JSON.stringify(posts));
 
         return res.status(200).json({
             "code": 200,

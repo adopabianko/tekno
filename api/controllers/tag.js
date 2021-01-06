@@ -4,7 +4,7 @@ const {getCache, setCache} = require('../commons/redis');
 
 const find = async (req, res) => {
     try {
-        const tagsCache = await getCache("tags").catch((err) => {
+        const tagsCache = await getCache("tekno_cache:tags").catch((err) => {
             if (err) console.error(err);
         });
 
@@ -31,7 +31,7 @@ const find = async (req, res) => {
 
         logger.info("Get Tag");
 
-        await setCache("tags", JSON.stringify(tags));
+        await setCache("tekno_cache:tags", JSON.stringify(tags));
 
         return res.status(200).json({
             "code": 200,
