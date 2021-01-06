@@ -11,7 +11,7 @@ class RoleUser extends Model
 
     protected $table = 'role_user';
 
-    public function role_user() {
-        return $this->hasOne('App\Models\RoleUser', 'user_id', 'id');
+    public function role() {
+        return $this->belongsTo('App\Models\Role', 'role_id', 'id');
     }
 }

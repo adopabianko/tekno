@@ -34,7 +34,10 @@ class UserRepository implements UserRepositoryInterface {
 
             return $actions;
         })
-        ->rawColumns(['actions'])
+        ->editColumn('display_name', function($col) {
+            return $col->role_user->role->display_name;
+        })
+        ->rawColumns(['display_name', 'actions'])
         ->addIndexColumn()
         ->make(true);
     }
