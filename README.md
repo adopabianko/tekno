@@ -20,6 +20,10 @@ $ cp -R .env.example .env
 ```
 
 ```bash
+$ docker network create tekno_network
+```
+
+```bash
 $ ./vendor/bin/sail up -d
 ```
 

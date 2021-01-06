@@ -7,8 +7,8 @@ services:
     volumes:
       - './:/code'
     networks:
-      - cms_sail
+      - tekno_network
 networks:
-  cms_sail:
+  tekno_network:
     external:
-      name: cms_sail
+      name: tekno_network
