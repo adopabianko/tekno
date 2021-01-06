@@ -4,8 +4,9 @@ namespace App\Repositories;
 
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Models\Post;
+use App\Models\PostCategory;
 use Yajra\Datatables\Datatables;
-
+use Illuminate\Support\Facades\Redis;
 class PostRepository implements PostRepositoryInterface {
     public function datatables() {
         return Datatables::of(Post::with('Category')->where('status', '!=', 0)->orderBy('id','desc')->get())
@@ -50,6 +51,8 @@ class PostRepository implements PostRepositoryInterface {
     }
 
     public function save($post) {
+        Redis::del('tekno_cache:posts*');
+
         $file = $post->file('cover');
         $storageName = \Storage::disk('local')->put('public/posts', $file);
 
@@ -65,6 +68,10 @@ class PostRepository implements PostRepositoryInterface {
 
     public function update($reqParam, $post) {
         $dataUpdate = $reqParam->all();
+
+        $category = PostCategory::select('slug')->where('id', $reqParam['category_id'])->first();
+        Redis::del('tekno_cache:posts');
+        Redis::del('tekno_cache:posts:'.$category->slug);
 
         if ($reqParam->file('cover')) {
             \Storage::disk('local')->delete("public/posts/{$post->cover}");
@@ -83,6 +90,13 @@ class PostRepository implements PostRepositoryInterface {
     }
 
     public function destroy($id) {
-        return Post::where('id', $id)->update(['status' => 0]);
+        $post = Post::find($id);
+
+        $category = PostCategory::select('slug')->where('id', $post->category_id)->first();
+        Redis::del('tekno_cache:posts');
+        Redis::del('tekno_cache:posts:'.$category->slug);
+
+        $post->status = 0;
+        return $post->save();
     }
 }

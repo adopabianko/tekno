@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Repositories\Interfaces\PostCategoryInterface;
 use App\Models\PostCategory;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Redis;
 
 class PostCategoryRepository implements PostCategoryInterface {
 
@@ -44,6 +45,8 @@ class PostCategoryRepository implements PostCategoryInterface {
     }
 
     public function save($postCategoryData) {
+        Redis::del("tekno_cache:post:categories");
+
         $postCategoryData['slug'] = str_replace(' ', '-', strtolower($postCategoryData['name']));
         $postCategory = new PostCategory($postCategoryData);
 
@@ -51,6 +54,8 @@ class PostCategoryRepository implements PostCategoryInterface {
     }
 
     public function update($reqParam, $postCategoryData) {
+        Redis::del("tekno_cache:post:categories");
+
         $dataUpdate = $reqParam->all();
         $dataUpdate['slug'] = str_replace(' ', '-', strtolower($dataUpdate['name']));
 
@@ -58,6 +63,8 @@ class PostCategoryRepository implements PostCategoryInterface {
     }
 
     public function destroy($id) {
+        Redis::del("tekno_cache:post:categories");
+
         return PostCategory::where('id', $id)->update(['status' => 0]);
     }
 }

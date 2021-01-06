@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Repositories\Interfaces\TagRepositoryInterface;
 use App\Models\Tag;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Redis;
 
 class TagRepository implements TagRepositoryInterface {
     public function getAll() {
@@ -43,6 +44,8 @@ class TagRepository implements TagRepositoryInterface {
     }
 
     public function save($tag) {
+        Redis::del("tekno_cache:tags");
+
         $tag['slug'] = str_replace(' ', '_', strtolower($tag['name']));
         $tag = new Tag($tag);
 
@@ -50,6 +53,8 @@ class TagRepository implements TagRepositoryInterface {
     }
 
     public function update($reqParam, $tag) {
+        Redis::del("tekno_cache:tags");
+        
         $dataUpdate = $reqParam->all();
         $dataUpdate['slug'] = str_replace(' ', '_', strtolower($dataUpdate['name']));
 
@@ -57,6 +62,8 @@ class TagRepository implements TagRepositoryInterface {
     }
 
     public function destroy($id) {
+        Redis::del("tekno_cache:tags");
+
         return Tag::where('id', $id)->update(['status' => 0]);
     }
 }

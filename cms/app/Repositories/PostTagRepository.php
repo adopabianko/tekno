@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use Illuminate\Support\Facades\Cache;
 use App\Models\PostTag;
 use App\Repositories\Interfaces\PostTagRepositoryInterface;
 
@@ -10,8 +9,6 @@ class PostTagRepository implements PostTagRepositoryInterface {
 
     public function save($postId, $tags)
     {
-        Cache::forget('tags');
-
         $data = [];
         foreach ($tags as $item) {
             $data[] = [
@@ -32,8 +29,6 @@ class PostTagRepository implements PostTagRepositoryInterface {
         \DB::beginTransaction();
 
         try {
-            Cache::forget('tags');
-            
             PostTag::where('post_id', $postId)->delete();
 
             $data = [];
