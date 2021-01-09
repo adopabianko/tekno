@@ -57,7 +57,7 @@
                                 <div class="form-group">
                                     <label for="name">Parent</label>
                                     <select name="parent" class="form-control" id="parent">
-                                        <option disabled selected>Choose</option>
+                                        <option selected value="0">Choose</option>
                                         @foreach($parent as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach

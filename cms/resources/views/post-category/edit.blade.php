@@ -58,7 +58,7 @@
                                 <div class="form-group">
                                     <label for="parent">Parent</label>
                                     <select name="parent" class="form-control" id="name">
-                                        <option selected value="">Choose</option>
+                                        <option selected value="0">Choose</option>
                                         @foreach($parent as $item)
                                             @if($category->id !== $item->id)
                                                 @php $selected = $category->parent == $item->id ? 'selected' : '' @endphp

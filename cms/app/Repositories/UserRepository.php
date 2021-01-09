@@ -5,110 +5,100 @@ namespace App\Repositories;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 use App\Models\RoleUser;
-use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository implements UserRepositoryInterface {
 
-    public function datatables() {
-        $users =  User::with('role_user.role')->get();
-
-        return Datatables::of($users)
-        ->editColumn('actions', function($col) {
-            $actions = '';
-
-            if (\Laratrust::isAbleTo('user-edit-data')) {
-                $actions .= '
-                    <a href="' . route('user.edit', ['user' => $col->id]) . '" class="btn btn-xs bg-gradient-info" data-toggle="tooltip" data-placement="top" title="Edit">
-                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                    </a>
-                ';
-            }
-
-            if (\Laratrust::isAbleTo('user-destroy-data') && \Auth::user()->id !== $col->id) {
-                $actions .= '
-                    <a href="javascript:void(0)" class="btn btn-xs bg-gradient-danger" onclick="Delete('.$col->id.','."'".$col->name."'".')" data-toggle="tooltip" data-placement="top" title="Delete">
-                        <i class="fa fa-trash-alt" aria-hidden="true"></i>
-                    </a>
-                ';
-            }
-
-            return $actions;
-        })
-        ->editColumn('display_name', function($col) {
-            return $col->role_user->role->display_name;
-        })
-        ->rawColumns(['display_name', 'actions'])
-        ->addIndexColumn()
-        ->make(true);
+    public function findAll() {
+        return User::with('role_user.role')
+        ->where('active', 1)
+        ->orderBy('id', 'desc')->get();
     }
 
-    public function save($userData) {
-        \DB::beginTransaction();
+    public function findAllWithPaginate(string $role = null, string $name = null, string $email = null) {
+        return User::with('role_user.role')
+        ->when($role && $role !== 'all', function($q) use ($role) {
+            $q->whereHas('role_user.role', function($q) use ($role) {
+                return $q->where('name', $role);
+            });
+        })
+        ->when($name, function($q) use ($name){
+            return $q->where('name', 'like', "%{$name}%");
+        })
+        ->when($email, function($q) use ($email){
+            return $q->where('email', 'like', "%{$email}%");
+        })
+        ->where('active', 1)
+        ->orderBy('id', 'desc')->paginate(10);
+    }
+
+    public function save(array $userData) {
+        DB::beginTransaction();
 
         try {
             $roleId = $userData['role_id'];
 
             unset($userData['role_id']);
-        
+
             $user = new User($userData);
-            $user->password = \Hash::make($userData['password']);
+            $user->password = Hash::make($userData['password']);
 
             $user->save();
             $user->attachRole($roleId);
 
-            \DB::commit();
+            DB::commit();
 
             return true;
         } catch(\Exception $e) {
-            \DB::rollback();
+            DB::rollback();
 
             return false;
         }
 
     }
 
-    public function getRoleUser($userId) {
+    public function findRoleUser(int $userId) {
         return RoleUser::where('user_id', $userId)->first();
     }
 
-    public function update($reqParam, $userData) {
-        \DB::beginTransaction();
+    public function update(array $newUserData, User $oldUserData) {
+        DB::beginTransaction();
 
         try {
-            $password = $reqParam->password;
-            $updateParam = $reqParam->all();
+            $password = $newUserData['password'];
 
             if (!empty($password)) {
-                $password = \Hash::make($password);
+                $password = Hash::make($password);
 
-                $updateParam['password'] = $password;
+                $newUserData['password'] = $password;
             } else {
-                unset($updateParam['password']);
+                unset($newUserData['password']);
             }
 
-            $roleId = $updateParam['role_id'];
+            $roleId = $newUserData['role_id'];
 
-            unset($updateParam['role_id']);
-            
-            $userData->update($updateParam);
+            unset($newUserData['role_id']);
 
-            $userData->syncRoles([$roleId]);
+            $oldUserData->update($newUserData);
 
-            \DB::commit();
+            $oldUserData->syncRoles([$roleId]);
+
+            DB::commit();
         } catch(\Exception $e) {
-            \DB::rollback();
+            DB::rollback();
 
             return false;
         }
     }
 
-    public function destroy($id) {
+    public function destroy(int $id) {
         return User::where('id', $id)->update(['active' => 0]);
     }
 
-    public function profileUpdate($reqParam, $userData) {
-        $reqParam['password'] = \Hash::make($reqParam->password);
+    public function profileUpdate(array $newUserData, User $oldUserData) {
+        $newUserData['password'] = Hash::make($newUserData['password']);
 
-        return $userData->update($reqParam->all());
+        return $oldUserData->update($newUserData);
     }
 }

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>TEKNO</title>
+        <title>OSKAB</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- Font Awesome -->
@@ -63,7 +63,7 @@
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
                 <!-- Brand Logo -->
                 <a href="{{ route('home') }}" class="brand-link" style="text-align: center">
-                <span class="brand-text"><b>TEKNO</b></span>
+                <span class="brand-text"><b>OSKAB</b></span>
                 </a>
                 <!-- Sidebar -->
                 <div class="sidebar">
@@ -81,66 +81,6 @@
                                         Home
                                     </p>
                                 </a>
-                            </li>
-                            @endpermission
-                            @permission('posts-view')
-                            <li class="nav-item has-treeview
-                            {{ 
-                                request()->is('post*') || 
-                                request()->is('tag*') || 
-                                request()->is('post*') ? 'menu-open' : ''
-                            }}
-                            ">
-                                <a href="#" class="nav-link
-                                {{ 
-                                    request()->is('post*') || 
-                                    request()->is('tag*') ||
-                                    request()->is('post*') ? 'active' : ''
-                                }}
-                                ">
-                                    <i class="nav-icon fas fa-newspaper"></i>
-                                    <p>
-                                        Posts
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-				<ul class="nav nav-treeview">
-				    @permission('post-add-new-data')
-                                    <li class="nav-item">
-                                        <a href="{{ route('post.create') }}" class="nav-link {{ request()->is('post/create') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Add New</p>
-                                        </a>
-                                    </li>
-                                    @endpermission
-				    @permission('post-view-list-data')
-				
-				    @php $postId = Request::route('post.id') @endphp
-
-                                    <li class="nav-item">
-                                        <a href="{{ route('post') }}" class="nav-link {{ request()->is('post') || request()->is('post/'.$postId.'/edit') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>All Posts</p>
-                                        </a>
-                                    </li>
-                                    @endpermission
-                                    @permission('post-category*')
-                                    <li class="nav-item">
-                                        <a href="{{ route('post-category') }}" class="nav-link {{ request()->is('post-category*') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Categories</p>
-                                        </a>
-                                    </li>
-                                    @endpermission
-                                    @permission('tag*')
-                                    <li class="nav-item">
-                                        <a href="{{ route('tag') }}" class="nav-link {{ request()->is('tag*') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Tags</p>
-                                        </a>
-                                    </li>
-				    @endpermission
-                                </ul>
                             </li>
                             @endpermission
                             @permission('user-management-view')
@@ -201,7 +141,7 @@
                 <div class="float-right d-none d-sm-block">
                     <b>Version</b> 2.0.0
                 </div>
-                <strong>Copyright &copy; 2020-{{ date('Y') }} <a href="{{ route('home') }}">TEKNO</a>.</strong> All rights
+                <strong>Copyright &copy; 2020-{{ date('Y') }} <a href="{{ route('home') }}">OSKAB</a>.</strong> All rights
                 reserved.
             </footer>
         </div>

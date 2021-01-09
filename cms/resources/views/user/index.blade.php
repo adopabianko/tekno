@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('css')
-<!-- DataTables -->
-<link rel="stylesheet" href="{{ asset('theme/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('theme/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('theme/plugins/alertify/themes/alertify.core.css') }}">
 <link rel="stylesheet" href="{{ asset('theme/plugins/alertify/themes/alertify.bootstrap.css') }}">
 @stop
@@ -44,7 +41,56 @@
             <div class="row">
                 <!-- left column -->
                 <div class="col-md-12">
-                    <!-- jquery validation -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Search</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            @php
+                                $role = app('request')->get('role');
+                                $name = app('request')->get('name');
+                                $email = app('request')->get('email');
+                            @endphp
+                            <form action={{ route('user') }} method="GET">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Role</label>
+                                            <select name="role" class="form-control">
+                                                <option value ="all" selected>All</option>
+                                                @foreach($roles as $item)
+                                                @php $selected = $item->name == $role ? 'selected' : '' @endphp
+                                                <option {{ $selected }} value="{{ $item->name }}">{{ $item->display_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" name="name" class="form-control" value="{{ $name }}" placeholder="Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="email" name="email" class="form-control" value="{{ $email }}" placeholder="Email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">List Data</h3>
@@ -61,7 +107,40 @@
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
+                                <tbody>
+                                    @foreach($users as $key => $item)
+                                    <tr>
+                                        <td class="text-center">{{ $users->firstItem() + $key }}</td>
+                                        <td>{{ $item->role_user->role->display_name }}</td>
+                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->email }}</td>
+                                        <td class="text-center">
+                                        @if (Laratrust::isAbleTo('user-edit-data'))
+                                            <a href="{{ route('user.edit', ['user' => $item->id]) }}" class="btn btn-xs bg-gradient-info" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                                            </a>
+                                        @endif
+
+                                        @if (Laratrust::isAbleTo('user-destroy-data') && Auth::user()->id !== $item->id)
+                                            <a href="javascript:void(0)" class="btn btn-xs bg-gradient-danger" onclick="Delete('{{$item->id}}', '{{$item->name}}')" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                <i class="fa fa-trash-alt" aria-hidden="true"></i>
+                                            </a>
+                                        @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
                             </table>
+
+                            <div style="margin-top: 15px">
+                                {{
+                                    $users->appends([
+                                        'role'=> $role,
+                                        'name'=> $name,
+                                        'email'=> $email,
+                                    ])->links()
+                                }}
+                            </div>
                         </div>
                     </div>
                     <!-- /.card -->
@@ -78,11 +157,6 @@
 @stop
 
 @section('js')
-<!-- DataTables -->
-<script src="{{ asset('theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('theme/plugins/alertify/lib/alertify.min.js')}}"></script>
 <script>
     $(function() {
@@ -90,20 +164,6 @@
             selector: '[data-toggle="tooltip"]'
         });
 
-        $('#datatables').DataTable({
-            autoWidth: false,
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            ajax: window.location.href + '/datatables',
-            columns: [
-                {data: 'DT_RowIndex', name: 'id', className: "text-center", searchable: false, orderable: false},
-                {data: 'display_name', name: 'display_name'},
-                {data: 'name', name: 'name'},
-                {data: 'email', name: 'email'},
-                {data: 'actions', name: 'actions', className: "text-center", searchable: false, orderable: false},
-            ]
-        });
     })
 
     function Delete(id, name) {
@@ -113,8 +173,9 @@
                     var obj = jQuery.parseJSON(JSON.stringify(data));
 
                     if (obj.status == 'success') {
-                        var data_tables = $('#datatables').DataTable();
-                        data_tables.draw();
+                        alertify.alert(obj.message, function(e) {
+                            window.location.reload();
+                        });
                     } else {
                         alertify.alert(obj.message);
                     }

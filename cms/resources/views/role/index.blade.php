@@ -1,11 +1,5 @@
 @extends('layouts.app')
 
-@section('css')
-<!-- DataTables -->
-<link rel="stylesheet" href="{{ asset('theme/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('theme/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-@stop
-
 @section('content')
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -42,7 +36,43 @@
             <div class="row">
                 <!-- left column -->
                 <div class="col-md-12">
-                    <!-- jquery validation -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Search</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            @php
+                                $name = app('request')->get('name');
+                                $displayName = app('request')->get('display_name');
+                            @endphp
+                            <form action={{ route('role') }} method="GET">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" name="name" class="form-control" value="{{ $name }}" placeholder="Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Display Name</label>
+                                            <input type="text" name="display_name" class="form-control" value="{{ $displayName }}" placeholder="Display Name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">List Data</h3>
@@ -59,7 +89,39 @@
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
+                                <tbody>
+                                    @foreach($roles as $key => $item)
+                                    <tr>
+                                        <td class="text-center">{{ $roles->firstItem() + $key }}</td>
+                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->display_name }}</td>
+                                        <td>{{ $item->description }}</td>
+                                        <td class="text-center">
+                                            @if (\Laratrust::isAbleTo('role-edit-data'))
+                                                <a href="{{ route('role.edit', ['role' => $item->id]) }}" class="btn btn-xs bg-gradient-info" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                    <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                                                </a>
+                                            @endif
+
+                                            @if (\Laratrust::isAbleTo('role-access-management'))
+                                                <a href="{{ route('role.access-management', ['role' => $item->id]) }}" class="btn btn-xs bg-gradient-secondary" data-toggle="tooltip" data-placement="top" title="Access Management">
+                                                    <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                                                </a>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
                             </table>
+
+                            <div style="margin-top: 15px">
+                                {{
+                                    $roles->appends([
+                                        'name' => $name,
+                                        'display_name' => $displayName
+                                    ])->links()
+                                }}
+                            </div>
                         </div>
                     </div>
                     <!-- /.card -->
@@ -76,30 +138,10 @@
 @stop
 
 @section('js')
-<!-- DataTables -->
-<script src="{{ asset('theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 <script>
     $(function() {
         $("body").tooltip({
             selector: '[data-toggle="tooltip"]'
-        });
-
-        $('#datatables').DataTable({
-            autoWidth: false,
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            ajax: window.location.href + '/datatables',
-            columns: [
-                {data: 'DT_RowIndex', name: 'id', className: "text-center", searchable: false, orderable: false},
-                {data: 'name', name: 'name'},
-                {data: 'display_name', name: 'display_name'},
-                {data: 'description', name: 'description'},
-                {data: 'actions', name: 'actions', className: "text-center", searchable: false, orderable: false},
-            ]
         });
     })
 </script>

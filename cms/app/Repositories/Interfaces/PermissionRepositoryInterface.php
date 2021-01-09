@@ -2,10 +2,12 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\Models\Permission;
+
 interface PermissionRepositoryInterface {
-    public function getAll();
-    public function datatables();
-    public function save($roleData);
-    public function getById($id);
-    public function update($reqParam, $roleData);
+    public function findAll();
+    public function findAllWithPaginate(string $name, string $displayName);
+    public function save(array $permissionData);
+    public function findById(int $id);
+    public function update(array $newPermissionData, Permission $oldPermissionData);
 }

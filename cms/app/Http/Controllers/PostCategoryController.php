@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostCategoryRequest;
 use App\Repositories\PostCategoryRepository;
 use App\Models\PostCategory;
+use Illuminate\Http\Request;
 
 class PostCategoryController extends Controller
 {
@@ -14,16 +15,16 @@ class PostCategoryController extends Controller
         $this->postCategoryRepository = $postCategoryRepository;
     }
 
-    public function index() {
-        return view('post-category.index');
-    }
+    public function index(Request $request) {
+        $name = $request->name;
 
-    public function datatables() {
-        return $this->postCategoryRepository->datatables();
+        $categories = $this->postCategoryRepository->findAllWithPaginate($name);
+
+        return view('post-category.index', compact('categories'));
     }
 
     public function create() {
-        $parent = $this->postCategoryRepository->getAll();
+        $parent = $this->postCategoryRepository->findAll();
 
         return view('post-category.create', compact('parent'));
     }
@@ -41,13 +42,13 @@ class PostCategoryController extends Controller
     }
 
     public function edit(PostCategory $category) {
-        $parent = $this->postCategoryRepository->getAll();
+        $parent = $this->postCategoryRepository->findAll();
 
         return view('post-category.edit', compact('category', 'parent'));
     }
 
     public function update(PostCategoryRequest $request, PostCategory $category) {
-        $update = $this->postCategoryRepository->update($request, $category);
+        $update = $this->postCategoryRepository->update($request->all(), $category);
 
         if ($update) {
             \Session::flash("alert-success", "Category sucessfully updated");

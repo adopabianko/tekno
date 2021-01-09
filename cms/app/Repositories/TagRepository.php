@@ -8,42 +8,18 @@ use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Redis;
 
 class TagRepository implements TagRepositoryInterface {
-    public function getAll() {
+    public function findAll() {
         return Tag::where('status', 1)->orderBy('id','desc')->get();
     }
 
-    public function datatables() {
-        return Datatables::of(Tag::where('status', 1)->orderBy('id','desc')->get())
-            ->editColumn('actions', function($col) {
-                $actions = '';
-
-                if (\Laratrust::isAbleTo('tag-edit-data')) {
-                    $actions .= '
-                        <a href="'.route('tag.edit', ['tag' => $col->id]).'" class="btn btn-xs bg-gradient-info" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                        </a>
-                    ';
-                }
-
-                if (\Laratrust::isAbleTo('tag-destroy-data')) {
-                    $actions .= '
-                        <a href="javascript:void(0)" class="btn btn-xs bg-gradient-danger" onclick="Delete('.$col->id.','."'".$col->name."'".')" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="fa fa-trash-alt" aria-hidden="true"></i>
-                        </a>
-                    ';
-                }
-
-                return $actions;
-            })
-            ->editColumn('tag', function($col) {
-                return isset($col->tag->name) ? $col->tag->name : '';
-            })
-            ->rawColumns(['tag', 'actions'])
-            ->addIndexColumn()
-            ->make(true);
+    public function findAllWithPaginate(string $name = null) {
+        return Tag::when($name, function($q) use ($name) {
+            return $q->where('name', 'like', "%{$name}%");
+        })
+        ->where('status', 1)->orderBy('id','desc')->paginate(10);
     }
 
-    public function save($tag) {
+    public function save(array $tag) {
         Redis::del("tekno_cache:tags");
 
         $tag['slug'] = str_replace(' ', '_', strtolower($tag['name']));
@@ -52,16 +28,13 @@ class TagRepository implements TagRepositoryInterface {
         return $tag->save();
     }
 
-    public function update($reqParam, $tag) {
+    public function update(array $newTagData, Tag $oldTagData) {
         Redis::del("tekno_cache:tags");
-        
-        $dataUpdate = $reqParam->all();
-        $dataUpdate['slug'] = str_replace(' ', '_', strtolower($dataUpdate['name']));
 
-        return $tag->update($dataUpdate);
+        return $oldTagData->update($newTagData);
     }
 
-    public function destroy($id) {
+    public function destroy(int $id) {
         Redis::del("tekno_cache:tags");
 
         return Tag::where('id', $id)->update(['status' => 0]);

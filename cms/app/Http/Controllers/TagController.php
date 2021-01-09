@@ -14,15 +14,15 @@ class TagController extends Controller
     public function __construct(
         TagRepository $tagRepository
     ) {
-        $this->tagRepository = $tagRepository;    
+        $this->tagRepository = $tagRepository;
     }
 
-    public function index() {
-        return view('tag.index');
-    }
+    public function index(Request $request) {
+        $name = $request->name;
 
-    public function datatables() {
-        return $this->tagRepository->datatables();
+        $tags = $this->tagRepository->findAllWithPaginate($name);
+
+        return view('tag.index', compact('tags'));
     }
 
     public function create() {
@@ -46,7 +46,7 @@ class TagController extends Controller
     }
 
     public function update(TagRequest $request, Tag $tag) {
-       $update = $this->tagRepository->update($request, $tag);
+       $update = $this->tagRepository->update($request->all(), $tag);
 
        if ($update) {
            \Session::flash("alert-success", "Tag sucessfully updated");
@@ -71,5 +71,5 @@ class TagController extends Controller
             'status' => 'success',
             'message' => 'Tag successfully destroyed',
         ]);
-    }  
+    }
 }

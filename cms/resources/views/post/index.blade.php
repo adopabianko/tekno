@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('css')
-<!-- DataTables -->
-<link rel="stylesheet" href="{{ asset('theme/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('theme/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('theme/plugins/alertify/themes/alertify.core.css') }}">
 <link rel="stylesheet" href="{{ asset('theme/plugins/alertify/themes/alertify.bootstrap.css') }}">
 @stop
@@ -44,7 +41,49 @@
             <div class="row">
                 <!-- left column -->
                 <div class="col-md-12">
-                    <!-- jquery validation -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Search</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            @php
+                                $title = app('request')->get('title');
+                                $category = app('request')->get('category');
+                            @endphp
+                            <form action={{ route('post') }} method="GET">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Category</label>
+                                            <select name="category" class="form-control">
+                                                <option value ="all" selected>All</option>
+                                                @foreach($categories as $item)
+                                                    @php $selected = $item->slug == $category ? 'selected' : '' @endphp
+                                                    <option {{ $selected }} value="{{ $item->slug }}">{{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Title</label>
+                                            <input type="text" name="title" class="form-control" value="{{ $title }}" placeholder="Title">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">List Data</h3>
@@ -61,7 +100,39 @@
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
+                                <tbody>
+                                @foreach($posts as $key => $item)
+                                    <tr>
+                                        <td class="text-center">{{ $posts->firstItem() + $key }}</td>
+                                        <td>{{ $item->title }}</td>
+                                        <td>{{ $item->Category->name }}</td>
+                                        <td>{{ $item->status == 1 ? 'Draft' : 'Publish' }}</td>
+                                        <td class="text-center">
+                                            @if (\Laratrust::isAbleTo('post-edit-data'))
+                                            <a href="{{ route('post.edit', ['post' => $item->id]) }}" class="btn btn-xs bg-gradient-info" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                                            </a>
+                                            @endif
+
+                                            @if (\Laratrust::isAbleTo('post-destroy-data'))
+                                            <a href="javascript:void(0)" class="btn btn-xs bg-gradient-danger" onclick="Delete('{{ $item->id }}','{{ $item->name }}')" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                <i class="fa fa-trash-alt" aria-hidden="true"></i>
+                                            </a>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
                             </table>
+
+                            <div style="margin-top: 15px">
+                                {{
+                                    $posts->appends([
+                                        'title'=> $title,
+                                        'category'=> $category,
+                                    ])->links()
+                                }}
+                            </div>
                         </div>
                     </div>
                     <!-- /.card -->
@@ -78,31 +149,11 @@
 @stop
 
 @section('js')
-<!-- DataTables -->
-<script src="{{ asset('theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('theme/plugins/alertify/lib/alertify.min.js')}}"></script>
 <script>
     $(function() {
         $("body").tooltip({
             selector: '[data-toggle="tooltip"]'
-        });
-
-        $('#datatables').DataTable({
-            autoWidth: false,
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            ajax: window.location.href + '/datatables',
-            columns: [
-                {data: 'DT_RowIndex', name: 'id', className: "text-center", searchable: false, orderable: false},
-                {data: 'title', name: 'title'},
-                {data: 'category', name: 'category'},
-                {data: 'status', name: 'status'},
-                {data: 'actions', name: 'actions', className: "text-center", searchable: false, orderable: false},
-            ]
         });
     });
 
@@ -113,8 +164,9 @@
                     var obj = jQuery.parseJSON(JSON.stringify(data));
 
                     if (obj.status == 'success') {
-                        var data_tables = $('#datatables').DataTable();
-                        data_tables.draw();
+                        alertify.alert(obj.message, function(e) {
+                            window.location.reload();
+                        });
                     } else {
                         alertify.alert(obj.message);
                     }

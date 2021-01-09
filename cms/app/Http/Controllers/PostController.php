@@ -8,6 +8,7 @@ use App\Repositories\TagRepository;
 use App\Repositories\PostTagRepository;
 use App\Models\Post;
 use App\Http\Requests\PostRequest;
+use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
@@ -28,8 +29,14 @@ class PostController extends Controller
         $this->postTagRepository = $postTagRepository;
     }
 
-    public function index() {
-        return view('post.index');
+    public function index(Request  $request) {
+        $title = $request->title;
+        $category = $request->category;
+
+        $posts = $this->postRepository->findAllWithPaginate($title, $category);
+        $categories = $this->postCategoryRepository->findAll();
+
+        return view('post.index', compact('posts', 'categories'));
     }
 
     public function datatables() {
@@ -37,8 +44,8 @@ class PostController extends Controller
     }
 
     public function create() {
-        $categories = $this->postCategoryRepository->getAll();
-        $tags = $this->tagRepository->getAll();
+        $categories = $this->postCategoryRepository->findAll();
+        $tags = $this->tagRepository->findAll();
 
         return view('post.create', compact('categories', 'tags'));
     }
@@ -47,7 +54,9 @@ class PostController extends Controller
         \DB::beginTransaction();
 
         try {
-            $postId = $this->postRepository->save($request);
+            $cover = $request->file('cover');
+
+            $postId = $this->postRepository->save($request->all(), $cover);
             if ($request->tags)
                 $this->postTagRepository->save($postId, $request->tags);
 
@@ -64,8 +73,8 @@ class PostController extends Controller
     }
 
 	public function edit(Post $post) {
-        $categories = $this->postCategoryRepository->getAll();
-        $tags = $this->tagRepository->getAll();
+        $categories = $this->postCategoryRepository->findAll();
+        $tags = $this->tagRepository->findAll();
         $postTag = $this->postTagRepository->findByPostId($post->id);
 
         $tagData = [];
@@ -80,7 +89,9 @@ class PostController extends Controller
         \DB::beginTransaction();
 
         try {
-            $this->postRepository->update($request, $post);
+            $cover = $request->file('cover');
+
+            $this->postRepository->update($request->all(), $post, $cover);
 
             if ($request->tags)
                 $this->postTagRepository->update($post->id, $request->tags);

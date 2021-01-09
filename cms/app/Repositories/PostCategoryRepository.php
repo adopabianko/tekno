@@ -4,47 +4,25 @@ namespace App\Repositories;
 
 use App\Repositories\Interfaces\PostCategoryInterface;
 use App\Models\PostCategory;
-use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Redis;
 
 class PostCategoryRepository implements PostCategoryInterface {
 
-    public function getAll() {
+    public function findAll() {
         return PostCategory::where('status', 1)->orderBy('id','desc')->get();
     }
 
-    public function datatables() {
-        return Datatables::of(PostCategory::with('parentCategory')->where('status', 1)->orderBy('id','desc')->get())
-            ->editColumn('actions', function($col) {
-                $actions = '';
-
-                if (\Laratrust::isAbleTo('post-category-edit-data')) {
-                    $actions .= '
-                        <a href="'.route('post-category.edit', ['category' => $col->id]).'" class="btn btn-xs bg-gradient-info" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                        </a>
-                    ';
-                }
-
-                if (\Laratrust::isAbleTo('post-category-destroy-data')) {
-                    $actions .= '
-                        <a href="javascript:void(0)" class="btn btn-xs bg-gradient-danger" onclick="Delete('.$col->id.','."'".$col->name."'".')" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="fa fa-trash-alt" aria-hidden="true"></i>
-                        </a>
-                    ';
-                }
-
-                return $actions;
+    public function findAllWithPaginate(string $name = null) {
+        return PostCategory::with('parentCategory')
+            ->when($name, function($q) use ($name) {
+                return $q->where('name', 'like', "%{$name}%");
             })
-            ->editColumn('parentCategory', function($col) {
-                return isset($col->parentCategory->name) ? $col->parentCategory->name : '';
-            })
-            ->rawColumns(['parentCategory', 'actions'])
-            ->addIndexColumn()
-            ->make(true);
+            ->where('status', 1)
+            ->orderBy('id', 'desc')
+            ->paginate(10);
     }
 
-    public function save($postCategoryData) {
+    public function save(array $postCategoryData) {
         Redis::del("tekno_cache:post:categories");
 
         $postCategoryData['slug'] = str_replace(' ', '-', strtolower($postCategoryData['name']));
@@ -53,16 +31,15 @@ class PostCategoryRepository implements PostCategoryInterface {
         return $postCategory->save();
     }
 
-    public function update($reqParam, $postCategoryData) {
+    public function update(array $newPostCategoryData, PostCategory $oldPostCategoryData) {
         Redis::del("tekno_cache:post:categories");
 
-        $dataUpdate = $reqParam->all();
-        $dataUpdate['slug'] = str_replace(' ', '-', strtolower($dataUpdate['name']));
+        $newPostCategoryData['slug'] = str_replace(' ', '-', strtolower($newPostCategoryData['name']));
 
-        return $postCategoryData->update($dataUpdate);
+        return $oldPostCategoryData->update($newPostCategoryData);
     }
 
-    public function destroy($id) {
+    public function destroy(int $id) {
         Redis::del("tekno_cache:post:categories");
 
         return PostCategory::where('id', $id)->update(['status' => 0]);

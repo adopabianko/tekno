@@ -5,91 +5,60 @@ namespace App\Repositories;
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Models\Post;
 use App\Models\PostCategory;
-use Yajra\Datatables\Datatables;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Redis;
+
 class PostRepository implements PostRepositoryInterface {
-    public function datatables() {
-        return Datatables::of(Post::with('Category')->where('status', '!=', 0)->orderBy('id','desc')->get())
-            ->editColumn('actions', function($col) {
-                $actions = '';
-
-                if (\Laratrust::isAbleTo('post-edit-data')) {
-                    $actions .= '
-                        <a href="'.route('post.edit', ['post' => $col->id]).'" class="btn btn-xs bg-gradient-info" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                        </a>
-                    ';
-                }
-
-                if (\Laratrust::isAbleTo('post-destroy-data')) {
-                    $actions .= '
-                        <a href="javascript:void(0)" class="btn btn-xs bg-gradient-danger" onclick="Delete('.$col->id.','."'".$col->name."'".')" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="fa fa-trash-alt" aria-hidden="true"></i>
-                        </a>
-                    ';
-                }
-
-                return $actions;
+    public function findAllWithPaginate(string $title = null, string $category = null)
+    {
+        return Post::with('Category')
+            ->when($title, function($q) use ($title){
+                return $q->where('title', 'like', "%{$title}%");
             })
-            ->editColumn('category', function($col) {
-                return $col->Category->name;
+            ->when($category && $category !== 'all', function($q) use ($category) {
+                $q->whereHas('Category', function($q) use ($category) {
+                    return $q->where('slug', $category);
+                });
             })
-            ->editColumn('status', function($col) {
-                $status = '';
-
-                if ($col->status == 1) {
-                    $status = 'Draft';
-                } elseif ($col->status == 2) {
-                    $status = 'Publish';
-                }
-
-                return $status;
-            })
-            ->rawColumns(['category',  'status', 'actions'])
-            ->addIndexColumn()
-            ->make(true);
+            ->where('status', '!=',0)
+            ->orderBy('id', 'desc')->paginate(10);
     }
 
-    public function save($post) {
+    public function save(array $postData, UploadedFile $cover) {
         Redis::del('tekno_cache:posts*');
 
-        $file = $post->file('cover');
-        $storageName = \Storage::disk('local')->put('public/posts', $file);
+        $storageName = \Storage::disk('local')->put('public/posts', $cover);
 
-        $requestAll = $post->all();
-        $requestAll['cover'] = basename($storageName);
-        $requestAll['slug'] = str_replace(' ', '-', strtolower($requestAll['title']));
+        $postData['cover'] = basename($storageName);
+        $postData['slug'] = str_replace(' ', '-', strtolower($postData['title']));
 
-        $post = new Post($requestAll);
-        $post->save();
+        $postSave = new Post($postData);
+        $postSave->save();
 
-        return $post->id;
+        return $postSave->id;
     }
 
-    public function update($reqParam, $post) {
-        $dataUpdate = $reqParam->all();
-
-        $category = PostCategory::select('slug')->where('id', $reqParam['category_id'])->first();
+    public function update(array $newPostData, Post $oldPostData, UploadedFile $cover = null) {
+        $category = PostCategory::select('slug')->where('id', $newPostData['category_id'])->first();
         Redis::del('tekno_cache:posts');
         Redis::del('tekno_cache:posts:'.$category->slug);
 
-        if ($reqParam->file('cover')) {
-            \Storage::disk('local')->delete("public/posts/{$post->cover}");
+        if ($cover) {
+            \Storage::disk('local')->delete("public/posts/{$oldPostData->cover}");
 
-            $file = $reqParam->file('cover');
-            $storageName = \Storage::disk('local')->put('public/posts', $file);
+            $storageName = \Storage::disk('local')->put('public/posts', $cover);
 
-            $dataUpdate['cover'] = basename($storageName);
+            $newPostData['cover'] = basename($storageName);
         } else {
-            unset($dataUpdate['cover']);
+            unset($newPostData['cover']);
         }
 
-        $dataUpdate['slug'] = str_replace(' ', '-', strtolower($dataUpdate['title']));
+        $newPostData['slug'] = str_replace(' ', '-', strtolower($newPostData['title']));
 
-        return $post->update($dataUpdate);
+        return $oldPostData->update($newPostData);
     }
 
-    public function destroy($id) {
+    public function destroy(int $id) {
         $post = Post::find($id);
 
         $category = PostCategory::select('slug')->where('id', $post->category_id)->first();

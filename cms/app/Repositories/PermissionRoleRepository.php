@@ -7,7 +7,7 @@ use App\Models\PermissionRole;
 
 class PermissionRoleRepository implements PermissionRoleRepositoryInterface
 {
-    public function getById($id){
+    public function findById(int $id){
         return PermissionRole::where('role_id', $id)->get();
     }
 }

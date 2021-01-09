@@ -8,6 +8,9 @@ use App\Repositories\UserRepository;
 use App\Repositories\RoleRepository;
 use App\Models\User;
 use App\Jobs\SendUserAccount;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -22,16 +25,19 @@ class UserController extends Controller
         $this->roleRepository = $roleRepository;
     }
 
-    public function index() {
-        return view('user.index');
-    }
+    public function index(Request $request) {
+        $role = $request->role;
+        $name = $request->name;
+        $email = $request->email;
 
-    public function datatables() {
-        return $this->userRepository->datatables();
+        $users = $this->userRepository->findAllWithPaginate($role, $name, $email);
+        $roles = $this->roleRepository->findAll();
+
+        return view('user.index', compact('users', 'roles'));
     }
 
     public function create() {
-        $roles = $this->roleRepository->getAll();
+        $roles = $this->roleRepository->findAll();
 
         return view('user.create', compact('roles'));
     }
@@ -45,17 +51,17 @@ class UserController extends Controller
 
             $this->userRepository->save($reqAll);
 
-            \Session::flash("alert-success", "User successfully saved");
+            Session::flash("alert-success", "User successfully saved");
         } catch(Exception $e) {
-            \Session::flash("alert-danger", "User unsuccessfully saved");
+            Session::flash("alert-danger", "User unsuccessfully saved");
         }
 
         return redirect()->route('user');
     }
 
     public function edit(User $user) {
-        $roles = $this->roleRepository->getAll();
-        $roleUser = $this->userRepository->getRoleUser($user->id);
+        $roles = $this->roleRepository->findAll();
+        $roleUser = $this->userRepository->findRoleUser($user->id);
 
         return view('user.edit', compact('roles', 'roleUser', 'user'));
     }
@@ -65,11 +71,11 @@ class UserController extends Controller
             // send to email user
             SendUserAccount::dispatch($request->all());
 
-            $this->userRepository->update($request, $user);
+            $this->userRepository->update($request->all(), $user);
 
-            \Session::flash("alert-success", "User successfully updated");
+            Session::flash("alert-success", "User successfully updated");
         } catch(Exception $e) {
-            \Session::flash("alert-danger", "User unsuccessfully updated");
+            Session::flash("alert-danger", "User unsuccessfully updated");
         }
 
         return redirect()->route('user');
@@ -92,7 +98,7 @@ class UserController extends Controller
     }
 
     public function profile() {
-        $userId = \Auth::user()->id;
+        $userId = Auth::user()->id;
 
         $user = User::where('id', $userId)->first();
 
@@ -100,12 +106,12 @@ class UserController extends Controller
     }
 
     public function profileUpdate(ProfileRequest $request, User $user) {
-        $update = $this->userRepository->profileUpdate($request, $user);
+        $update = $this->userRepository->profileUpdate($request->all(), $user);
 
         if ($update) {
-            \Session::flash("alert-success", "Profile successfully updated");
+            Session::flash("alert-success", "Profile successfully updated");
         } else {
-            \Session::flash("alert-danger", "Profile unsuccessfully updated");
+            Session::flash("alert-danger", "Profile unsuccessfully updated");
         }
 
         return redirect()->route('user.profile');

@@ -21,7 +21,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="{{ route('login') }}"><b>Tek</b>no</a>
+        <a href="{{ route('login') }}"><b>Tekno</b</a>
     </div>
     <!-- /.login-logo -->
     <div class="card">
@@ -30,7 +30,7 @@
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf
-                
+
                 <div class="input-group mb-3">
                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Email" autofocus>
                     <div class="input-group-append">

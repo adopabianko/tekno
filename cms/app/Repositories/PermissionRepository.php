@@ -4,45 +4,35 @@ namespace App\Repositories;
 
 use App\Repositories\Interfaces\PermissionRepositoryInterface;
 use App\Models\Permission;
-use Yajra\Datatables\Datatables;
 
 class PermissionRepository implements PermissionRepositoryInterface {
 
-    public function getAll() {
-        return Permission::all();
+    public function findAll() {
+        return Permission::orderBy('id', 'desc')->get();
     }
 
-    public function datatables() {
-        return Datatables::of(Permission::orderBy('id','desc')->get())
-            ->editColumn('actions', function($col) {
-                $actions = '';
-
-                if (\Laratrust::isAbleTo('permission-edit-data')) {
-                    $actions .= '
-                        <a href="'.route('permission.edit', ['permission' => $col->id]).'" class="btn btn-xs bg-gradient-info" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                        </a>
-                    ';
-                }
-
-                return $actions;
-            })
-            ->rawColumns(['actions'])
-            ->addIndexColumn()
-            ->make(true);
+    public function findAllWithPaginate(string $name = null, string $displayName = null) {
+        return Permission::when($name, function($q) use ($name) {
+            return $q->where('name', 'like', "%{$name}%");
+        })
+        ->when($displayName, function($q) use ($displayName) {
+            return $q->where('display_name', 'like', "%{$displayName}%");
+        })
+        ->orderBy('id', 'desc')
+        ->paginate(10);
     }
 
-    public function save($permissionData) {
+    public function save(array $permissionData) {
         $permission = new Permission($permissionData);
 
         return $permission->save();
     }
 
-    public function getById($id) {
+    public function findById(int $id) {
         return Permission::findOrFail($id);
     }
 
-    public function update($reqParam, $permissionData) {
-        return $permissionData->update($reqParam->all());
+    public function update(array $newPermissionData, Permission $oldPermissionData) {
+        return $oldPermissionData->update($newPermissionData);
     }
 }
