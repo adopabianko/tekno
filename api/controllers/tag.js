@@ -1,3 +1,4 @@
+'use strict';
 const tagService = require('../services/tag');
 const logger = require('../commons/logger');
 const {getCache, setCache} = require('../commons/redis');

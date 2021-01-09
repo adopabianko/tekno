@@ -1,3 +1,5 @@
+'use strict';
+
 const postService = require('../services/post');
 const logger = require('../commons/logger');
 const {getCache, setCache} = require('../commons/redis');

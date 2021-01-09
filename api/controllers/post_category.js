@@ -1,3 +1,4 @@
+'use strict';
 const postCategoryService = require('../services/post_category');
 const logger = require('../commons/logger');
 const {getCache, setCache} = require('../commons/redis');

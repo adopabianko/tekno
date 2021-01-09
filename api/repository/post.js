@@ -1,3 +1,5 @@
+'use strict';
+const Sequelize = require('sequelize');
 const models = require('../models');
 
 const findAll = () => {
@@ -6,7 +8,7 @@ const findAll = () => {
             'title',
             'slug',
             'content',
-            'cover',
+            [models.Sequelize.fn('CONCAT', process.env.COVER_URL, '', models.Sequelize.col('cover')), 'cover'],
             ['created_at', 'created_at'],
         ],
         where: {
@@ -40,7 +42,7 @@ const findByCategory = (category) => {
             'title',
             'slug',
             'content',
-            'cover',
+            [models.Sequelize.fn('CONCAT', process.env.COVER_URL, '', models.Sequelize.col('cover')), 'cover'],
             ['created_at', 'created_at'],
         ],
         where: {
