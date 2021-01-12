@@ -4,7 +4,7 @@
 
 
 
-# Instalasi via Docker
+# Install via Docker
 
 Clone project:
 ```bash
