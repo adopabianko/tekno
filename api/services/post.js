@@ -14,6 +14,8 @@ const find = async (req) => {
             });
 
             if (postsCache) {
+                logger.info("Get post data from cache");
+
                 return ({
                     "code": 200,
                     "message": "List post",
@@ -24,7 +26,7 @@ const find = async (req) => {
             const posts = await PostRepository.findByCategory(category);
 
             if (posts.length < 1){
-                logger.info("Get Post");
+                logger.info("Get post data not found");
 
                 return ({
                     "code": 404,
@@ -32,9 +34,11 @@ const find = async (req) => {
                 });
             }
 
-            logger.info("Get Post");
+            logger.info("Caching post into redis");
 
             await setCache("tekno_cache:posts:"+category, JSON.stringify(posts));
+
+            logger.info("Get post data from db");
 
             return ({
                 "code": 200,
@@ -49,7 +53,7 @@ const find = async (req) => {
         });
 
         if (postsCache) {
-            logger.info("Get Post");
+            logger.info("Get post data from cache");
 
             return ({
                 "code": 200,
@@ -61,7 +65,7 @@ const find = async (req) => {
         const posts = await PostRepository.findAll();
 
         if (posts.length < 1){
-            logger.info("Get Post");
+            logger.info("Get post data not found");
 
             return ({
                 "code": 404,
@@ -69,9 +73,11 @@ const find = async (req) => {
             });
         }
 
-        logger.info("Get Post");
+        logger.info("Caching post into redis");
 
         await setCache("tekno_cache:posts", JSON.stringify(posts));
+
+        logger.info("Get post data from db");
 
         return ({
             "code": 200,
