@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {validateToken} = require('../middleware//token');
+const {validateToken} = require('../middleware/token');
 const postController = require('../controllers/post');
 const postCategoryController = require('../controllers/post_category');
 const tagController = require('../controllers/tag');
