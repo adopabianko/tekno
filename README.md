@@ -1,4 +1,10 @@
-# Instalasi via Docker
+<p align="center">
+  <a href="#"><img alt="oskab" src="https://user-images.githubusercontent.com/8348927/104300341-ee34ea80-54f8-11eb-8eb6-6c7af13b64dd.png" width="200"/></a>
+</p>
+
+
+
+# Install via Docker
 
 Clone project:
 ```bash
