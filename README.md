@@ -13,7 +13,7 @@ $ git clone https://github.com/adopabianko/tekno.git
 
 
 
-### Proses Instalasi CMS
+### CMS Installation Process
 
 Run the following command:
 
